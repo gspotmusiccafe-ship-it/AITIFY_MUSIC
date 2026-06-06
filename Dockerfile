@@ -1,6 +1,6 @@
 FROM php:8.2-apache
 
-# Install system dependencies
+# Install dependencies
 RUN apt-get update && apt-get install -y \
     git \
     unzip \
@@ -20,11 +20,10 @@ WORKDIR /var/www/html
 # Copy project files
 COPY . .
 
-# Create missing directories so Composer doesn't crash during scan
-RUN mkdir -p common/foundation/database/seeders
-
-# Install dependencies and generate the autoloader
-RUN composer install --no-dev --optimize-autoloader --ignore-platform-reqs
+# Install dependencies without scanning or executing scripts
+# This bypasses the ClassMapGenerator errors entirely
+RUN composer install --no-dev --no-scripts --no-autoloader --ignore-platform-reqs && \
+    composer dump-autoload -o --no-scripts
 
 # Permissions for Apache
 RUN chown -R www-data:www-data /var/www/html
