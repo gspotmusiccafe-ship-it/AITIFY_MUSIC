@@ -1,6 +1,6 @@
 FROM php:8.2-apache
 
-# Install dependencies
+# Install system dependencies
 RUN apt-get update && apt-get install -y \
     git \
     unzip \
@@ -20,10 +20,10 @@ WORKDIR /var/www/html
 # Copy project files
 COPY . .
 
-# Create the missing folders so Composer doesn't crash
-RUN mkdir -p database/seeders database/factories
+# Create missing directories so Composer doesn't crash during scan
+RUN mkdir -p common/foundation/database/seeders
 
-# Install dependencies
+# Install dependencies and generate the autoloader
 RUN composer install --no-dev --optimize-autoloader --ignore-platform-reqs
 
 # Permissions for Apache
