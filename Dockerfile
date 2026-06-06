@@ -1,6 +1,6 @@
 FROM php:8.2-apache
 
-# Install system dependencies
+# Install dependencies
 RUN apt-get update && apt-get install -y \
     git \
     unzip \
@@ -20,8 +20,11 @@ WORKDIR /var/www/html
 # Copy project files
 COPY . .
 
-# Install dependencies without scripts and without scanning
-RUN composer install --no-dev --no-scripts --no-autoloader --ignore-platform-reqs
+# Create the missing folders so Composer doesn't crash
+RUN mkdir -p database/seeders database/factories
+
+# Install dependencies
+RUN composer install --no-dev --optimize-autoloader --ignore-platform-reqs
 
 # Permissions for Apache
 RUN chown -R www-data:www-data /var/www/html
