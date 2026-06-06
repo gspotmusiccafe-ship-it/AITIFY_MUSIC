@@ -21,8 +21,9 @@ WORKDIR /var/www/html
 COPY . .
 
 # Install dependencies normally (now that database folders exist)
-RUN composer install --no-dev --optimize-autoloader
-
+# Replace the current RUN composer line with this:
+RUN composer install --no-dev --no-scripts --no-autoloader --ignore-platform-reqs && \
+    composer dump-autoload --optimize
 # Permissions for Apache
 RUN chown -R www-data:www-data /var/www/html
 
